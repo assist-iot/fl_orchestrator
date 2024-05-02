@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "webapp.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "webapp.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.webapp.autoscaling.enabled }}
+  replicas: {{ .Values.webapp.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "webapp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "webapp.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.webapp.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.enablerNodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not .Values.enablerNodeSelector }}
+        {{- with .Values.webapp.nodeSelector }}
+      nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.webapp.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.webapp.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.webapp.podSecurityContext | nindent 8 }}
+      containers:
+        - name: webapp
+          securityContext:
+            {{- toYaml .Values.webapp.securityContext | nindent 12 }}
+          image: "{{ .Values.webapp.image.repository }}:{{ .Values.webapp.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.webapp.image.pullPolicy }}
+          ports:
+            - name: port1
+              containerPort: {{ .Values.webapp.service.ports.port1.containerPort }}
+              protocol: {{ .Values.webapp.service.ports.port1.protocol }}
+          resources:
+            {{- toYaml .Values.webapp.resources | nindent 12 }}
+          env:
+            - name: FL_GUI_UI_HOST_PORT
+              value: {{ .Values.webapp.service.ports.port1.containerPort | quote }}
+            # - name: FL_GUI_API_PORT
+            #   value: {{ .Values.api.service.ports.restapi.nodePort | quote }}
+            # - name: FL_GUI_API_WS_PORT
+            #   value: {{ .Values.api.service.ports.websocket.nodePort | quote }}
+          {{- with .Values.webapp.envVars }}
+            - name: FL_GUI_API_HOST_NAME
+              value: {{ .FL_GUI_API_HOST_NAME | quote }}
+            - name: FL_GUI_API_PORT
+              value: {{ .FL_GUI_API_PORT | quote }}
+            - name: FL_GUI_API_WS_PORT
+              value: {{ .FL_GUI_API_WS_PORT | quote }}
+          {{- end }}

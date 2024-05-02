@@ -1,0 +1,349 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "FL Orchestrator",
+    "description": "An API to work with the FL Orchestrator"
+  },
+  "paths": {
+    "/getConfigurations": {
+      "get": {
+        "tags": [
+          "FL Orchestrator"
+        ],
+        "description": "Returns all configurations stored in MongoDB",
+        "responses": {
+          "200": {
+            "description": "Configurations in JSON format",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "eval_metrics": {
+                        "type": "string"
+                      },
+					  "eval_metrics_value": {
+                        "type": "string"
+                      },
+					  "min_available_clients": {
+                        "type": "string"
+                      },
+					  "min_fit_clients": {
+                        "type": "string"
+                      },
+					  "modelName": {
+                        "type": "string"
+                      },
+					  "number_of_rounds": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/configurationsbyModel/{id}": {
+      "get": {
+        "tags": [
+          "FL Orchestrator"
+        ],
+        "description": "Recover configuration by model",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration in JSON format",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "example": "hola"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/storeConfigurationModel": {
+      "post": {
+        "tags": [
+          "FL Orchestrator"
+        ],
+        "description": "Add configuration for a specfic model",
+        "consumes": "application/json",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "configuration",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "eval_metrics": {
+                  "type": "string"
+                },
+                "eval_metrics_value": {
+                  "type": "string"
+                },
+                "min_available_clients": {
+                  "type": "string"
+                },
+                "min_fit_clients": {
+                  "type": "string"
+                },
+                "modelName": {
+                  "type": "string"
+                },
+                "number_of_rounds": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration in JSON format",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "example": "hola"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/updateConfigurationModel": {
+      "post": {
+        "tags": [
+          "FL Orchestrator"
+        ],
+        "description": "Update the configuration for a specfic model",
+        "consumes": "application/json",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "configuration",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "eval_metrics": {
+                  "type": "string"
+                },
+                "eval_metrics_value": {
+                  "type": "string"
+                },
+                "min_available_clients": {
+                  "type": "string"
+                },
+                "min_fit_clients": {
+                  "type": "string"
+                },
+                "modelName": {
+                  "type": "string"
+                },
+                "number_of_rounds": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration in JSON format",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "example": "hola"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trainingModel": {
+      "post": {
+        "tags": [
+          "FL Orchestrator"
+        ],
+        "description": "Start training iteration for a specific model",
+        "consumes": "application/json",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "configuration",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "modelName": {
+                  "type": "string"
+                },
+                "strategy": {
+                  "type": "string"
+                },
+                "model_id": {
+                  "type": "string"
+                },
+                "num_rounds": {
+                  "type": "string"
+                },
+                "min_fit_clients": {
+                  "type": "string"
+                },
+                "min_available_clients": {
+                  "type": "string"
+                },
+                "adapt_config": {
+                  "type": "string"
+                },
+                "client_type_id": {
+                  "type": "string"
+                },
+                "server_address": {
+                  "type": "string"
+                },
+                "optimizers": {
+                  "type": "string"
+                },
+                "eval_metrics": {
+                  "type": "string"
+                },
+                "eval_func": {
+                  "type": "string"
+                },
+                "num_classes": {
+                  "type": "string"
+                },
+                "shape": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration in JSON format",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "example": "hola"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/FL_traininground": {
+      "post": {
+        "tags": [
+          "FL Orchestrator"
+        ],
+        "description": "Receive information from Training Collector. JSON contains: model_name, model_version, round",
+        "consumes": "application/json",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "JSON message that will be shown in the UI (Web Application)",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "model_name": {
+                  "type": "string"
+                },
+                "model_version": {
+                  "type": "string"
+                },
+                "round": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message received from Training collector",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "example": "hola"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "api.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "api.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.api.service.type }}
+  ports:
+    - name: restapi
+      port: {{ .Values.api.service.ports.restapi.port }}
+      targetPort: {{ .Values.api.service.ports.restapi.targetPort }}
+      protocol: {{ .Values.api.service.ports.restapi.protocol }}
+      {{- if and (or (eq .Values.api.service.type "NodePort") (eq .Values.api.service.type "LoadBalancer")) (not (empty .Values.api.service.ports.restapi.nodePort)) }}
+      nodePort: {{ .Values.api.service.ports.restapi.nodePort }}
+      {{- end }}
+    - name: websocket
+      port: {{ .Values.api.service.ports.websocket.port }}
+      targetPort: {{ .Values.api.service.ports.websocket.targetPort }}
+      protocol: {{ .Values.api.service.ports.websocket.protocol }}
+      {{- if and (or (eq .Values.api.service.type "NodePort") (eq .Values.api.service.type "LoadBalancer")) (not (empty .Values.api.service.ports.websocket.nodePort)) }}
+      nodePort: {{ .Values.api.service.ports.websocket.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "api.selectorLabels" . | nindent 4 }}

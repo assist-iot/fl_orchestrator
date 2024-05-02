@@ -1,0 +1,37 @@
+[  
+   {  
+      "x":0,
+      "y":2,
+      "w":5,
+      "h":8,
+      "i":"0",
+      "type":"iframe",
+      "location":"https://kibana.pixel-ports.eu/app/kibana#/visualize/edit/7bbf0740-787e-11e9-9755-29ba95eb4758?embed=true&_g=()&_a=(filters:!(),linked:!f,query:(language:lucene,query:''),uiState:(),vis:(aggs:!((enabled:!t,id:'1',params:(),schema:metric,type:count),(enabled:!t,id:'2',params:(customLabel:'-',drop_partials:!f,extended_bounds:(),field:'@timestamp',interval:m,min_doc_count:1,timeRange:(from:now-15m,mode:quick,to:now),useNormalizedEsInterval:!t),schema:segment,type:date_histogram)),params:(addLegend:!t,addTimeMarker:!f,addTooltip:!t,categoryAxes:!((id:CategoryAxis-1,labels:(show:!t,truncate:100),position:bottom,scale:(type:linear),show:!t,style:(),title:(),type:category)),grid:(categoryLines:!f,style:(color:%23eee)),legendPosition:right,seriesParams:!((data:(id:'1',label:Count),drawLinesBetweenPoints:!t,mode:normal,show:true,showCircles:!t,type:line,valueAxis:ValueAxis-1)),times:!(),type:line,valueAxes:!((id:ValueAxis-1,labels:(filter:!f,rotate:0,show:!t,truncate:100),name:LeftAxis-1,position:left,scale:(mode:normal,type:linear),show:!t,style:(),title:(text:Count),type:value))),title:'Histogram+open+data+Thessaloniki',type:line))",
+      "moved":false
+   },
+   {  
+      "x":0,
+      "y":0,
+      "w":5,
+      "h":2,
+      "i":"1",
+      "type":"title",
+      "title":"OpenData from Thessaloniki",
+	  "headings": {
+		"h1":true,
+		"h2":false,
+		"h3":false
+	  },
+      "moved":false
+   },
+   {  
+      "x":0,
+      "y":10,
+      "w":5,
+      "h":3,
+      "i":"2",
+      "type":"content",
+      "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+      "moved":false
+   }
+]

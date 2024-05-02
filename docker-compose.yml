@@ -1,0 +1,74 @@
+name: fl-orchestrator-gui
+
+services:
+  api:
+    build: ./fl-api/
+    image: assistiot/fl-gui-api:latest
+    restart: always
+    depends_on:
+      - orchestrator
+    ports:
+      - '3000:3000'
+      - '3010:3010'
+    environment:
+      - NODE_ENV=production
+      - FL_REPOSITORY_URL=http://host.docker.internal:9012
+      - FL_ORCHESTRATOR_URL=http://orchestrator:5000
+    networks:
+      - default
+
+  ui:
+    build: ./fl-ui/
+    image: assistiot/fl-gui-ui:latest
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - '8080:8080'
+    environment:
+      - FL_GUI_API_HOST_NAME=api
+      - FL_GUI_API_PORT=3000
+      - FL_GUI_API_WS_PORT=3010
+    networks:
+      - default
+
+  orchestrator:
+      build: ./fl-orchestrator/
+      image: assistiot/fl-orchestrator:latest
+      restart: always
+      depends_on:
+          - db-mongo
+      ports:
+          - "5000:5000"
+      environment:
+          DB_PORT: 27017
+          DB_HOST_NAME: mongo_orchestrator
+          FL_GUI_API_HOST: host.docker.internal
+          FL_GUI_API_PORT: 3000
+          FL_REPOSITORY_HOSTNAME: host.docker.internal
+          FL_REPOSITORY_PORT: 31679
+
+          FL_REPOSITORY_DB_HOSTNAME: host.docker.internal
+          FL_LOCAL_OPERATIONS_HOSTNAME: host.docker.internal
+          FL_LOCAL_OPERATIONS_PORT: 32700
+          FL_TRAINING_COLLECTOR_HOSTNAME: host.docker.internal
+          FL_TRAINING_COLLECTOR_PORT: 30800
+      networks:
+          - default
+
+  db-mongo:
+      build: ./database/
+      image: assistiot/fl-db-mongo-4:latest
+      restart: always
+      hostname: mongo
+      ports:
+          - "27040:27017"
+      volumes:
+          - ./database/data:/data/db
+      networks:
+          - default
+
+networks:
+  default:
+    driver: bridge
+    name: custom_fl

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "dbmongo.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "dbmongo.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "dbmongo.fullname" . }}-headless
+  {{- if not .Values.dbmongo.autoscaling.enabled }}
+  replicas: {{ .Values.dbmongo.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "dbmongo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "dbmongo.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.dbmongo.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.enablerNodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not .Values.enablerNodeSelector }}
+        {{- with .Values.dbmongo.nodeSelector }}
+      nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.dbmongo.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.dbmongo.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.dbmongo.podSecurityContext | nindent 8 }}
+      containers:
+        - name: dbmongo
+          securityContext:
+            {{- toYaml .Values.dbmongo.securityContext | nindent 12 }}
+          image: "{{ .Values.dbmongo.image.repository }}:{{ .Values.dbmongo.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.dbmongo.image.pullPolicy }}
+          ports:
+            - name: port1
+              containerPort: {{ .Values.dbmongo.service.ports.port1.containerPort }}
+              protocol: {{ .Values.dbmongo.service.ports.port1.protocol }}
+          resources:
+            {{- toYaml .Values.dbmongo.resources | nindent 12 }}
+          {{- with .Values.dbmongo.envVars }}
+          env:
+            - name: EXAMPLE_ENV_VAR
+              value: {{ .exampleEnvVar | quote }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.dbmongo.persistence.enabled }}
+            - name: data
+              mountPath:  {{ .Values.dbmongo.persistence.mountPath | quote }}
+            {{- end }}
+      volumes:
+  {{- if and .Values.dbmongo.persistence.enabled .Values.dbmongo.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ tpl .Values.dbmongo.persistence.existingClaim $ }}
+  {{- else if not .Values.dbmongo.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+  {{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+        {{- range .Values.dbmongo.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.dbmongo.persistence.size | quote }}
+  {{- end }}

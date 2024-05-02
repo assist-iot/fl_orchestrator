@@ -1,0 +1,33 @@
+@import "./variables.scss";
+
+.is-active {
+  border-left: 2px solid #7eb89c;
+}
+
+#tab-metadataContent {
+  border: none;
+}
+
+#tab-datamodelContent {
+  border: none;
+}
+
+#tab-pubsubTab {
+  border: none;
+}
+
+#tab-ondemandTab {
+  border: none;
+}
+
+.hamburger {
+  border: none;
+}
+
+.el-menu {
+  margin-left: 6% !important;
+}
+
+.font-class {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+}

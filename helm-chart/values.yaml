@@ -1,0 +1,303 @@
+# Default values for enabler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# String to partially override enabler.fullname template (will maintain the release name).
+nameOverride: ""
+# String to fully override enabler.fullname template.
+fullnameOverride: ""
+# Deploy all the components in specific K8s node(s).
+enablerNodeSelector: {}
+# Cilium Multi-cluster global service.
+globalService: false
+
+# Component orchestrator values.
+orchestrator:
+  tier: external
+  replicaCount: 1
+
+  # Configuration of the container image.
+  imagePullSecrets: [ name: regcred ]
+  image:
+    repository: assistiot/fl-orchestrator
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+    pullPolicy: Always
+  
+  # Configuration of the service: type and ports.
+  service:
+    type: NodePort
+    ports:
+      webservice:
+        port: 5000
+        targetPort: 5000
+        containerPort: 5000
+        nodePort: "30500"
+        protocol: TCP
+      websocket:
+        port: 8765
+        targetPort: 8765
+        containerPort: 8765
+        nodePort: "30765"
+        protocol: TCP
+
+  # The specification of the resources is needed for the proper functioning 
+  # of the Smart Orchestrator enabler (requests)
+  # and of the Resource provisioning enabler (limits).
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    # minReplicas: 1
+    # maxReplicas: 3
+    # targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  # Include here the environment variables to be used in containers section of the component's manifest.
+  # TODO: Here and in the manifest is included an example, please adapt them to the requirements of your component.
+  envVars:
+    # DB_PORT: 27017
+    # DB_HOST_NAME: fl-orchestrator-dbmongo
+    # FL_GUI_API_HOSTNAME: api
+    # FL_GUI_API_PORT: 3000
+    FL_REPOSITORY_HOSTNAME: flrepositorylocaldb-flrepositorydb-flrepository
+    FL_REPOSITORY_PORT: 9012
+
+    FL_REPOSITORY_DB_HOSTNAME: flrepositorylocaldb-flrepositorydb-flrepositorydb 
+    FL_LOCAL_OPERATIONS_HOSTNAME: fllocaloperationslocal-trainingapp
+    FL_LOCAL_OPERATIONS_PORT: 9050
+    FL_TRAINING_COLLECTOR_HOSTNAME: trainingcollectorlocal-trainingmain
+    FL_TRAINING_COLLECTOR_PORT: 8000 
+
+
+  # Configure this parameters to deploy the component in specific K8s node(s).
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Component dbmongo values.
+dbmongo:
+  tier: internal
+  replicaCount: 1
+
+  # Configuration of the container image.
+  imagePullSecrets: [ name: regcred ]
+  image:
+    repository: assistiot/fl-db-mongo-4
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+    pullPolicy: Always
+  
+  # Configuration of the service: type and ports.
+  service:
+    type: NodePort
+    ports:
+      port1:
+        port: 27017
+        targetPort: 27017
+        containerPort: 27017
+        nodePort: "30717"
+        protocol: TCP
+
+  # The specification of the resources is needed for the proper functioning 
+  # of the Smart Orchestrator enabler (requests)
+  # and of the Resource provisioning enabler (limits).
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    # minReplicas: 1
+    # maxReplicas: 3
+    # targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  # Include here the environment variables to be used in containers section of the component's manifest.
+  # TODO: Here and in the manifest is included an example, please adapt them to the requirements of your component.
+  envVars: {}
+
+  # Component data persistence
+  persistence:
+    enabled: true
+    existingClaim: ""
+    mountPath: /data/db
+    accessModes:
+      - ReadWriteOnce
+    size: 50Mi
+
+  # Configure this parameters to deploy the component in specific K8s node(s).
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Component api values.
+api:
+  tier: external
+  replicaCount: 1
+
+  # Configuration of the container image.
+  imagePullSecrets: [ name: regcred ]
+  image:
+    repository: assistiot/fl-gui-api
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+    pullPolicy: Always
+  
+  # Configuration of the service: type and ports.
+  service:
+    type: NodePort
+    ports:
+      restapi:
+        port: 3000
+        targetPort: 3000
+        containerPort: 3000
+        nodePort: "31000"
+        protocol: TCP
+      websocket:
+        port: 3010
+        targetPort: 3010
+        containerPort: 3010
+        nodePort: "31010"
+        protocol: TCP
+
+  # The specification of the resources is needed for the proper functioning 
+  # of the Smart Orchestrator enabler (requests)
+  # and of the Resource provisioning enabler (limits).
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    # minReplicas: 1
+    # maxReplicas: 3
+    # targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  # Include here the environment variables to be used in containers section of the component's manifest.
+  # TODO: Here and in the manifest is included an example, please adapt them to the requirements of your component.
+  envVars:
+    NODE_ENV: production
+    FL_REPOSITORY_URL: http://flrepositorylocaldb-flrepositorydb-flrepository:9012
+    # FL_ORCHESTRATOR_URL: http://fl-orchestrator-app:5000
+
+
+  # Configure this parameters to deploy the component in specific K8s node(s).
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Component webapp values.
+webapp:
+  tier: external
+  replicaCount: 1
+
+  # Configuration of the container image.
+  imagePullSecrets: [ name: regcred ]
+  image:
+    repository: assistiot/fl-gui-ui
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
+    pullPolicy: Always
+  
+  # Configuration of the service: type and ports.
+  service:
+    type: NodePort
+    ports:
+      port1:
+        port: 8080
+        targetPort: 8080
+        containerPort: 8080
+        nodePort: "31080"
+        protocol: TCP
+
+  # The specification of the resources is needed for the proper functioning 
+  # of the Smart Orchestrator enabler (requests)
+  # and of the Resource provisioning enabler (limits).
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    # minReplicas: 1
+    # maxReplicas: 3
+    # targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  # Include here the environment variables to be used in containers section of the component's manifest.
+  # TODO: Here and in the manifest is included an example, please adapt them to the requirements of your component.
+  envVars:
+    FL_GUI_API_HOST_NAME: "localhost"
+    FL_GUI_API_PORT: 31000
+    FL_GUI_API_WS_PORT: 31010
+
+
+  # Configure this parameters to deploy the component in specific K8s node(s).
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+

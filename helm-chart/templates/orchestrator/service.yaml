@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "orchestrator.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "orchestrator.labels" . | nindent 4 }}
+  annotations:
+    {{- if .Values.globalService }}
+    {{- include "globalServiceAnnotations" . | nindent 4 }}
+    {{- end }}
+spec:
+  type: {{ .Values.orchestrator.service.type }}
+  ports:
+    - name: webservice
+      port: {{ .Values.orchestrator.service.ports.webservice.port }}
+      targetPort: {{ .Values.orchestrator.service.ports.webservice.targetPort }}
+      protocol: {{ .Values.orchestrator.service.ports.webservice.protocol }}
+      {{- if and (or (eq .Values.orchestrator.service.type "NodePort") (eq .Values.orchestrator.service.type "LoadBalancer")) (not (empty .Values.orchestrator.service.ports.webservice.nodePort)) }}
+      nodePort: {{ .Values.orchestrator.service.ports.webservice.nodePort }}
+      {{- end }}
+    - name: websocket
+      port: {{ .Values.orchestrator.service.ports.websocket.port }}
+      targetPort: {{ .Values.orchestrator.service.ports.websocket.targetPort }}
+      protocol: {{ .Values.orchestrator.service.ports.websocket.protocol }}
+      {{- if and (or (eq .Values.orchestrator.service.type "NodePort") (eq .Values.orchestrator.service.type "LoadBalancer")) (not (empty .Values.orchestrator.service.ports.websocket.nodePort)) }}
+      nodePort: {{ .Values.orchestrator.service.ports.websocket.nodePort }}
+      {{- end }}      
+  selector:
+    {{- include "orchestrator.selectorLabels" . | nindent 4 }}

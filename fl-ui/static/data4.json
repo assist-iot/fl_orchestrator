@@ -1,0 +1,37 @@
+[  
+   {  
+      "x":0,
+      "y":0,
+      "w":5,
+      "h":2,
+      "i":"0",
+      "type":"title",
+      "title":"Title Image",
+      "headings":{  
+         "h1":true,
+         "h2":false,
+         "h3":false
+      },
+      "moved":false
+   },
+   {  
+      "x":5,
+      "y":0,
+      "w":4,
+      "h":8,
+      "i":"1",
+      "type":"content",
+      "content":"Description of the image.",
+      "moved":false
+   },
+   {  
+      "x":0,
+      "y":2,
+      "w":5,
+      "h":10,
+      "i":"2",
+      "type":"image",
+      "location":"http://vue-grid-layout.surge.sh/static/monarch-on-plant.png",
+      "moved":false
+   }
+]

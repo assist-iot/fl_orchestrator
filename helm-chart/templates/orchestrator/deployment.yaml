@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "orchestrator.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "orchestrator.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.orchestrator.autoscaling.enabled }}
+  replicas: {{ .Values.orchestrator.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "orchestrator.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "orchestrator.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.orchestrator.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.enablerNodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if not .Values.enablerNodeSelector }}
+        {{- with .Values.orchestrator.nodeSelector }}
+      nodeSelector:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.orchestrator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.orchestrator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.orchestrator.podSecurityContext | nindent 8 }}
+      containers:
+        - name: orchestrator
+          securityContext:
+            {{- toYaml .Values.orchestrator.securityContext | nindent 12 }}
+          image: "{{ .Values.orchestrator.image.repository }}:{{ .Values.orchestrator.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.orchestrator.image.pullPolicy }}
+          ports:
+            - name: webservice
+              containerPort: {{ .Values.orchestrator.service.ports.webservice.containerPort }}
+              protocol: {{ .Values.orchestrator.service.ports.webservice.protocol }}
+          ports:
+            - name: websocket
+              containerPort: {{ .Values.orchestrator.service.ports.websocket.containerPort }}
+              protocol: {{ .Values.orchestrator.service.ports.websocket.protocol }}
+          resources:
+            {{- toYaml .Values.orchestrator.resources | nindent 12 }}
+          env:
+            - name: DB_HOST_NAME
+              value: {{ include "dbmongo.fullname" . }}
+            - name: DB_PORT
+              value: {{ .Values.dbmongo.service.ports.port1.containerPort | quote }}
+            - name: FL_GUI_API_HOSTNAME
+              value: {{ include "api.fullname" . }}
+            - name: FL_GUI_API_PORT
+              value:  {{ .Values.api.service.ports.restapi.containerPort | quote }}
+          {{- with .Values.orchestrator.envVars }}
+            - name: FL_REPOSITORY_HOSTNAME
+              value: {{ .FL_REPOSITORY_HOSTNAME | quote }}
+            - name: FL_REPOSITORY_PORT
+              value: {{ .FL_REPOSITORY_PORT | quote }}
+            - name: FL_REPOSITORY_DB_HOSTNAME
+              value: {{ .FL_REPOSITORY_DB_HOSTNAME | quote }}
+            - name: FL_LOCAL_OPERATIONS_HOSTNAME
+              value: {{ .FL_LOCAL_OPERATIONS_HOSTNAME | quote }}
+            - name: FL_LOCAL_OPERATIONS_PORT
+              value: {{ .FL_LOCAL_OPERATIONS_PORT | quote }}
+            - name: FL_TRAINING_COLLECTOR_HOSTNAME
+              value: {{ .FL_TRAINING_COLLECTOR_HOSTNAME | quote }}
+            - name: FL_TRAINING_COLLECTOR_PORT
+              value: {{ .FL_TRAINING_COLLECTOR_PORT | quote }}
+          {{- end }}

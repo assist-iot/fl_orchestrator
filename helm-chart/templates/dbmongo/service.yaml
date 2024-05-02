@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "dbmongo.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "dbmongo.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.dbmongo.service.type }}
+  ports:
+    - name: port1
+      port: {{ .Values.dbmongo.service.ports.port1.port }}
+      targetPort: {{ .Values.dbmongo.service.ports.port1.targetPort }}
+      protocol: {{ .Values.dbmongo.service.ports.port1.protocol }}
+      {{- if and (or (eq .Values.dbmongo.service.type "NodePort") (eq .Values.dbmongo.service.type "LoadBalancer")) (not (empty .Values.dbmongo.service.ports.port1.nodePort)) }}
+      nodePort: {{ .Values.dbmongo.service.ports.port1.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "dbmongo.selectorLabels" . | nindent 4 }}
