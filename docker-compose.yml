@@ -3,7 +3,7 @@ name: fl-orchestrator-gui
 services:
   api:
     build: ./fl-api/
-    image: assistiot/fl-gui-api:latest
+    image: assistiot/fl_orchestrator:api-latest
     restart: always
     depends_on:
       - orchestrator
@@ -19,7 +19,7 @@ services:
 
   ui:
     build: ./fl-ui/
-    image: assistiot/fl-gui-ui:latest
+    image: assistiot/fl_orchestrator:ui-latest
     restart: always
     depends_on:
       - api
@@ -34,7 +34,7 @@ services:
 
   orchestrator:
       build: ./fl-orchestrator/
-      image: assistiot/fl-orchestrator:latest
+      image: assistiot/fl_orchestrator:orchestrator-latest
       restart: always
       depends_on:
           - db-mongo
@@ -58,7 +58,7 @@ services:
 
   db-mongo:
       build: ./database/
-      image: assistiot/fl-db-mongo-4:latest
+      image: assistiot/fl_orchestrator:dbmongo4-latest
       restart: always
       hostname: mongo
       ports:

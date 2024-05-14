@@ -19,9 +19,9 @@ orchestrator:
   # Configuration of the container image.
   imagePullSecrets: [ name: regcred ]
   image:
-    repository: assistiot/fl-orchestrator
+    repository: assistiot/fl_orchestrator
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
+    tag: "orchestrator-latest"
     pullPolicy: Always
   
   # Configuration of the service: type and ports.
@@ -100,9 +100,9 @@ dbmongo:
   # Configuration of the container image.
   imagePullSecrets: [ name: regcred ]
   image:
-    repository: assistiot/fl-db-mongo-4
+    repository: assistiot/fl_orchestrator
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
+    tag: "dbmongo4-latest"
     pullPolicy: Always
   
   # Configuration of the service: type and ports.
@@ -171,9 +171,9 @@ api:
   # Configuration of the container image.
   imagePullSecrets: [ name: regcred ]
   image:
-    repository: assistiot/fl-gui-api
+    repository: assistiot/fl_orchestrator
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
+    tag: "api-latest"
     pullPolicy: Always
   
   # Configuration of the service: type and ports.
@@ -243,9 +243,9 @@ webapp:
   # Configuration of the container image.
   imagePullSecrets: [ name: regcred ]
   image:
-    repository: assistiot/fl-gui-ui
+    repository: assistiot/fl_orchestrator
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "latest"
+    tag: "ui-latest"
     pullPolicy: Always
   
   # Configuration of the service: type and ports.
